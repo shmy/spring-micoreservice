@@ -6,7 +6,7 @@ eureka:
     instance-id: ${spring.application.name}:${spring.cloud.client.ip-address}:${server.port}
   client:
     service-url:
-      defaultZone: http://localhost:2000/eureka/
+      defaultZone: http://eureka-server:2000/eureka/
 spring:
   application:
     name: zuulGeteWay
@@ -15,3 +15,7 @@ management:
     web:
       exposure:
         include: '*'
+zuul:
+  ignored-services:
+    - zuulgeteway
+    - monitorserver

@@ -1,0 +1,1 @@
+docker run --name zull-geteway -p 8080:8080 --link eureka-server -d zull-geteway

@@ -1,0 +1,1 @@
+docker run --name eureka-server -p 2000:2000 -d eureka-server
