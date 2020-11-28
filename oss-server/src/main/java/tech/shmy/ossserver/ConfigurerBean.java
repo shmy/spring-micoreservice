@@ -11,15 +11,15 @@ import tech.shmy.ossserver.service.FileService;
 import java.util.concurrent.TimeUnit;
 
 @Configuration
-public class Config implements WebMvcConfigurer {
+public class ConfigurerBean implements WebMvcConfigurer {
     @Autowired
     private FileService fileService;
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        val rootPath = fileService.getRootDir();
         registry.addResourceHandler("/f/**")
-                .addResourceLocations("file://" + rootPath )
+                .addResourceLocations("file://" + fileService.getTemporaryDir())
+                .addResourceLocations("file://" + fileService.getPersistentDir())
                 .setCacheControl(CacheControl.maxAge(1, TimeUnit.HOURS).cachePublic());
     }
 }

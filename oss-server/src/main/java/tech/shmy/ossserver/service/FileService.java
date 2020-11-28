@@ -16,18 +16,50 @@ import java.util.Calendar;
 public class FileService {
     @Autowired
     private Environment env;
+    public static final String TEMPORARY_DIR_NAME = "temp";
+    public static final String PERSISTENT_DIR_NAME = "data";
 
-    public String getUploadDir() {
+    public void createRootDir() throws Exception {
+        val tempDir = new File(getTemporaryDir());
+        val persistentDir = new File(getPersistentDir());
+        if (!tempDir.exists() && !tempDir.isDirectory()) {
+            if (!tempDir.mkdirs()) {
+                throw new Exception("create tempDir error");
+            }
+        }
+        if (!persistentDir.exists() && !persistentDir.isDirectory()) {
+            if (!persistentDir.mkdirs()) {
+                throw new Exception("create persistentDir error");
+            }
+        }
+    }
+
+    public String getTemporaryDir() {
         val rootPath = getRootDir();
+        var dir = Paths.get(rootPath, TEMPORARY_DIR_NAME).toString();
+        dir = dir.endsWith("/") ? dir : dir + "/";
+        return dir;
+    }
+
+    public String getPersistentDir() {
+        val rootPath = getRootDir();
+        var dir = Paths.get(rootPath, PERSISTENT_DIR_NAME).toString();
+        dir = dir.endsWith("/") ? dir : dir + "/";
+        return dir;
+    }
+
+    public String getUploadTemporaryDir() throws Exception {
         val now = Calendar.getInstance();
         val yearStr = String.valueOf(now.get(Calendar.YEAR));
         val weekStr = String.valueOf(now.get(Calendar.WEEK_OF_MONTH));
         val month = now.get(Calendar.MONTH) + 1;
         val monthStr = month < 10 ? "0" + month : String.valueOf(month);
-        val dirname = Paths.get(rootPath, yearStr, monthStr, weekStr);
+        val dirname = Paths.get(getTemporaryDir(), yearStr, monthStr, weekStr);
         File folder = dirname.toFile();
         if (!folder.exists() && !folder.isDirectory()) {
-            folder.mkdirs();
+           if (!folder.mkdirs()) {
+               throw new Exception("dir create failed");
+           }
         }
         return folder.toString();
     }
@@ -46,11 +78,6 @@ public class FileService {
         return Paths.get(uploadDir, filename + ext).toFile();
     }
 
-    public String getRelativePath(File file) {
-        val rootPath = getRootDir();
-        return file.toString().replace(rootPath, "");
-    }
-
     public String getExt(String filename) {
         var ext = "";
         val lastIndex = filename.lastIndexOf(".");
@@ -60,8 +87,14 @@ public class FileService {
         return ext;
     }
 
+    public String getTemporaryRelativePath(File file) {
+        var tempDir = getTemporaryDir();
+        tempDir = tempDir.endsWith("/") ? tempDir : tempDir + "/";
+        return file.toString().replace(tempDir, "");
+    }
+
     public FileCheckInfo getFileInfoByPath(String path) throws Exception {
-        val dirname = Paths.get(getRootDir(), path);
+        val dirname = Paths.get(getPersistentDir(), path);
         File file = dirname.toFile();
         if (!file.exists() || !file.isFile()) {
             throw new Exception("file is not exists");

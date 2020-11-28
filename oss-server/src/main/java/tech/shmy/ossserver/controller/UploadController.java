@@ -22,9 +22,9 @@ public class UploadController {
     private FileService fileService;
 
     @PostMapping("upload")
-    public List<String> upload(MultipartFile[] files) {
+    public List<String> upload(MultipartFile[] files) throws Exception {
         val result = new ArrayList<String>();
-        val uploadDir = fileService.getUploadDir();
+        val uploadDir = fileService.getUploadTemporaryDir();
         for (MultipartFile file : files) {
             val originalFilename = file.getOriginalFilename();
             assert originalFilename != null;
@@ -35,7 +35,7 @@ public class UploadController {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            result.add(fileService.getRelativePath(newFile));
+            result.add(fileService.getTemporaryRelativePath(newFile));
         }
         return result;
     }
