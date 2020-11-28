@@ -4,6 +4,7 @@
   <component name="FrameworkDetectionExcludesConfiguration">
     <file type="web" url="file://$PROJECT_DIR$/eureka-server" />
     <file type="web" url="file://$PROJECT_DIR$/monitor-server" />
+    <file type="web" url="file://$PROJECT_DIR$/oss-server" />
     <file type="web" url="file://$PROJECT_DIR$/zuul-geteway" />
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_15" project-jdk-name="15" project-jdk-type="JavaSDK">
